@@ -60,7 +60,7 @@ $$
 &  =\arg \max_\theta  \log P(Y | \theta)\\
 & = \arg\max_\theta \log\sum_Z P(Y, Z|\theta)\\
 & = \arg\max_\theta \log\sum_Z P(Y | Z, \theta) P(Z|\theta)
-\end{split}\
+\end{split}
 $$
 
 这个优化问题的难点就在于 $Z$ 的分布是完全未知且要求一个和的对数。前面通过迭代的方式来求这个极大值，现在我们来说明迭代的方法是有效的。
