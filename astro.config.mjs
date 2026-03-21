@@ -5,7 +5,7 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://learning-up-up.github.io",
+  site: "https://SakanactionQAQ.github.io",
   output: 'static',
   base: "/myblog/",
   markdown: {
