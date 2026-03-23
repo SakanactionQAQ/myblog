@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="zh"> <head><meta charset="UTF-8"><title>虚拟存储器：TLB设计</title><link rel="icon" href="/myblog/favicon.ico"><!-- KaTeX CSS --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><link rel="stylesheet" href="/myblog/_astro/_category_.BE_ZPk0i.css"></head> <body> <header class="site-header"> <div class="nav-container"> <a href="/myblog/" class="logo">我的博客</a> <nav class="nav-links"> <!-- 自动生成专栏 --> <div class="dropdown"> <a class="dropdown-title">专题</a> <div class="dropdown-menu"> <a href="/myblog/columns/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0">机器学习</a><a href="/myblog/columns/%E6%95%B0%E5%AD%A6%E6%96%B9%E6%B3%95">数学方法</a><a href="/myblog/columns/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">体系结构</a> </div> </div> <a href="/archive">归档</a> <a href="/tags">标签</a> <a href="https://github.com/SakanactionQAQ" target="_blank" rel="noopener">GitHub</a> </nav> </div> </header> <main>  <div class="post-layout"> <article class="post-content"> <h1>虚拟存储器：TLB设计</h1> <h2 id="tlb基本设计">TLB基本设计</h2>
+<p>对于一个两级页表，我们需要访问两次物理内存才能得到相应的物理地址。访问物理内存是一个耗时的过程，因此在这里引入cache的设计理念，将页表中最近使用的PTE缓存下来。</p>
+<p>我们将缓存PTE的部件称为TLB，TLB就是页表的Cache。但是对于页表而言，当前访问的页很有可能被再次访问，<ins>但是相邻的页并没有绝对相关性</ins>。因此TLB只能利用到cache事件相关性的设计理念。</p>
+<p>TLB的设计对采用全相联的方式，降低了组缺失率。组相联的设计要求TLB的容量不能过大<ins>(或许会导致比较器过于复杂)</ins>。为了实现更大容量的TLB也可以使用组相联的设计。现代处理器中通常使用两级TLB，其中第一级分为D-TLB与I-TLB使用全相联设计，而第二级TLB则可以使用组相联的设计。</p>
+<p>TLB的内容包括：</p>
+<ul>
+<li>Cacheable</li>
+<li>AP：访问权限</li>
+<li>V:有效位</li>
+<li>D:脏位</li>
+<li>U：使用次数</li>
+<li>Tag：记录VPN，进行匹配查找</li>
+<li>PFN：VPN与PFN的转换，方便进行写回是的寻址？</li>
+</ul>
+<p>对于4KB大小的页，是无法满足现代动辄数MB的程序的需求的，因此需要有更大容量的页。但是对于大容量的页，也诞生了新的问题，对于多数情况，一个页内大部分的空间是浪费的，同时对于Page Fault的处理，更大的页意味着要用更长的时间才能将下级存储内的数据移到物理内存中。</p>
+<p>为了解决这种问题，可以使用容量可变的页，可以通过在TLB中增加一个size位与操作系统的自动分配算法进行共同管理。对于不同大小的页，寻址也需要进行不同的处理，其中Tag的长度会发生变化。</p>
+<p>TLB所有的项除了脏位和使用位之外，其余的项在TLB中都是不会改变的，因此写回的时候也只要考虑这两项的写回。</p>
+<h2 id="tlb缺失">TLB缺失</h2>
+<p>TLB缺失的情况可以分为以下几种：</p>
+<ul>
+<li>虚拟地址对应的页不在物理内存中。</li>
+<li>虚拟地址对应的页在物理内存中，但还没被访问过或者被替换了</li>
+</ul>
+<p>解决TLB缺失就要找到虚拟地址对应的页并将它写入TLB，这个过程称为Page Table Walk。有两种解决方案</p>
+<h3 id="软件实现">软件实现</h3>
+<p>软件实现的好处总是灵活性更高。需要使用一个特殊寄存器存下虚拟地址，在通过使用一些直接操作TLB的指令，然后逐级查找PT找到对应的PTE。在这个过程中，需要中断当前的处理器中的指令序列，同时为了避免在这个过程中再吃出现TLB缺失的问题，<strong>需要将这段程序直接放在一个不需要进行地址转换的物理内存中（与操作系统在一起）</strong></p>
+<h3 id="硬件实现">硬件实现</h3>
+<p>直接由MMU实现使用一个状态机来实现，这样的性能会更好，但相比于软件实现不能完成更加灵活的替换策略。</p>
+<p>两种方法相比，各有优势。软件实现需要实现的硬件复杂度更低，并且替换策略更加灵活。硬件实现由于不需要修改流水线的进程，只需要要STALL，而软件在处理完缺失后要将之前的指令重新写入（流水线较深时耗费的时间会更加明显），因此硬件实现花费的时间反而更短。</p>
+<h2 id="tlb的写入">TLB的写入</h2>
+<p>对于store指令，由于使用了TLB，因此现在虚拟地址首先会访问TLB，如果命中，那么TLB中的脏位和使用位都应该被设置为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> ，如果采用写回的策略也就是当这个表项要被替换或修改时才写回到页表中。</p>
+<p>但是写回的方式也存在新的问题，对于发生Page Fault时，当从硬盘中找到虚拟地址对应的页并对于页表中的进行替换时，此时由于我们没有采用写通的策略，页表中的使用位和脏位可能都是过时的，这会导致我们的替换发生问题。要解决这个问题，我们就要再进行替换之前首先检查TLB，将TLB中的内容其全部写回，可以想象这是一个低效的过程，出现了很多不必要的写回。</p>
+<p>实际上，我们可以通过一个更加简单的方式来完成这个问题，由于TLB的容量是很有限的，因此可以认为<strong>所有被TLB记录的页都是重要的</strong>，这样我们只需要在页表中增加一位来记录当前页是否有被放入TLB中，对于所有TLB记录的页不进行替换，这也是我们替换策略的一部分。也就是说<strong>TLB中记录的页不允许被从页表中替换</strong></p>
+<p>同样的也可以引出另一个问题，物理内存中的内容可能也是过时的，在替换时需要考虑的Cache的存在，这个问题之后再考虑。</p>
+<h2 id="tlb的控制">TLB的控制</h2>
+<p>正常情况下，TLB是页表的一个子集，并且根据上面的替换策略，发生Page Fault时，也不会影响记录在TLB中的页。当发生TLB的缺失时，直接执行相关的替换策略就可以了。但是由于操作系统在一些情况下会将页表中的一些页删除，此时如果TLB中也记录了同样的页，TLB就需要和页表保持一致，如一个进程结束了需要页表和TLB都置为无效，以便后续的进程使用。</p>
+<p>简单来说，对于TLB的控制需要简单实现三个基本的操作：</p>
+<ul>
+<li>重置TLB所有的表项</li>
+<li>重置某个进程（ASID）的表项</li>
+<li>重置某个VPN对应的表项</li>
+</ul>
+<p>对于不同的处理器，有着不同的方式来实现相应的功能。</p> </article> <aside class="post-toc"> <nav> <strong>目录</strong> <ul> <li class="depth-2"> <a href="#tlb基本设计">TLB基本设计</a> </li><li class="depth-2"> <a href="#tlb缺失">TLB缺失</a> </li><li class="depth-3"> <a href="#软件实现">软件实现</a> </li><li class="depth-3"> <a href="#硬件实现">硬件实现</a> </li><li class="depth-2"> <a href="#tlb的写入">TLB的写入</a> </li><li class="depth-2"> <a href="#tlb的控制">TLB的控制</a> </li> </ul> </nav> </aside> </div>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll("pre").forEach(t=>{const e=document.createElement("button");e.className="copy-btn",e.innerText="复制",e.onclick=function(){navigator.clipboard.writeText(t.innerText).then(()=>{e.innerText="已复制",setTimeout(()=>e.innerText="复制",2e3)})},t.style.position="relative",t.appendChild(e)})});</script> </main> </body> </html>
