@@ -1,43 +1,26 @@
-# Astro Starter Kit: Minimal
+# myblog
 
-```sh
-npm create astro@latest -- --template minimal
-```
+个人学习笔记与科研 idea 博客（Astro + GitHub Pages）。
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 在线发布
 
-## 🚀 Project Structure
+站点为静态部署，在线发帖通过管理后台把 Markdown 提交到本仓库，再由 GitHub Actions 自动构建上线。
 
-Inside of your Astro project, you'll see the following folders and files:
+1. 打开 [https://SakanactionQAQ.github.io/myblog/admin/](https://SakanactionQAQ.github.io/myblog/admin/)
+2. 使用 GitHub Fine-grained Token 登录（仅本仓库，权限 `Contents: Read and write`）
+3. 填写标题、分类、正文后点击发布
+4. 等待 Actions 部署完成（约 1–2 分钟）即可在前台看到新文章
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+创建 Token：<https://github.com/settings/personal-access-tokens>
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+首次启用前请确认仓库已开启 Actions，并把本仓库的 GitHub Pages 来源设为 `gh-pages` 分支。
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## 本地命令
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command | Action |
+| :------ | :----- |
+| `npm install` | 安装依赖 |
+| `npm run dev` | 本地开发 |
+| `npm run build` | 构建到 `./dist/` |
+| `npm run preview` | 预览构建结果 |
+| `npm run deploy` | 手动部署到 gh-pages（一般不必，Actions 会自动部署） |

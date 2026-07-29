@@ -28,7 +28,7 @@ const {
   <body>
     <Header />
 
-    <main>
+    <main class={Astro.url.pathname.includes('/admin') ? 'admin-main' : undefined}>
       <slot />
       
       <script>
