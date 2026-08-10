@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="zh"> <head><meta charset="UTF-8"><title>tmux 使用</title><link rel="icon" href="/myblog/favicon.ico"><!-- KaTeX CSS --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><link rel="stylesheet" href="/myblog/_astro/index.BE_ZPk0i.css"></head> <body> <header class="site-header"> <div class="nav-container"> <a href="/myblog/" class="logo">我的博客</a> <nav class="nav-links"> <!-- 自动生成专栏 --> <div class="dropdown"> <a class="dropdown-title">专题</a> <div class="dropdown-menu"> <a href="/myblog/columns/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0">机器学习</a><a href="/myblog/columns/%E6%95%B0%E5%AD%A6%E6%96%B9%E6%B3%95">数学方法</a><a href="/myblog/columns/%E7%A7%91%E7%A0%94%E5%B7%A5%E5%85%B7">科研工具</a><a href="/myblog/columns/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">体系结构</a> </div> </div> <a href="/archive">归档</a> <a href="/tags">标签</a> <a href="https://github.com/SakanactionQAQ" target="_blank" rel="noopener">GitHub</a> </nav> </div> </header> <main>  <div class="post-layout"> <article class="post-content"> <h1>tmux 使用</h1> <p>tmux 是一个终端复用器，在一个窗口里开多个会话，保证 ssh 断了之后进程还可以继续。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>session（会话）</span></span>
+<span class="line"><span>	└── window（窗口，类似标签页）</span></span>
+<span class="line"><span>		└── pane（窗格，窗口内分屏）</span></span></code></pre>
+<h2 id="会话">会话</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>操作</th><th>命令</th></tr></thead><tbody><tr><td>新建会话</td><td><code>tmux</code> 或 <code>tmux new -s 名字</code></td></tr><tr><td>列出会话</td><td><code>tmux ls</code></td></tr><tr><td>接入会话</td><td><code>tmux attach -t 名字</code> 或 <code>tmux a -t 名字</code></td></tr><tr><td>脱离会话（进程不停）</td><td><code>Ctrl+b</code> 然后 <code>d</code></td></tr><tr><td>杀掉会话</td><td><code>tmux kill-session -t 名字</code></td></tr><tr><td>重命名当前会话</td><td><code>Ctrl+b</code> 然后 <code>$</code></td></tr></tbody></table>
+<h2 id="窗口">窗口</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>操作</th><th>按键（先 <code>Ctrl+b</code>）</th></tr></thead><tbody><tr><td>新建窗口</td><td><code>c</code></td></tr><tr><td>下一个 / 上一个</td><td><code>n</code> / <code>p</code></td></tr><tr><td>按编号切换</td><td><code>0</code>–<code>9</code></td></tr><tr><td>重命名窗口</td><td><code>,</code></td></tr><tr><td>关闭窗口</td><td><code>&#x26;</code></td></tr><tr><td>窗口列表</td><td><code>w</code></td></tr></tbody></table>
+<h2 id="窗格分屏">窗格分屏</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>操作</th><th>按键（先 <code>Ctrl+b</code>）</th></tr></thead><tbody><tr><td>左右分屏</td><td><code>%</code></td></tr><tr><td>上下分屏</td><td><code>"</code></td></tr><tr><td>切换窗格</td><td><code>方向键</code> 或 <code>o</code></td></tr><tr><td>关闭当前窗格</td><td><code>x</code></td></tr><tr><td>放大/还原当前窗格</td><td><code>z</code></td></tr><tr><td>调整大小</td><td><code>Ctrl+b</code> 后按住 <code>Ctrl</code> + 方向键</td></tr><tr><td>窗格变成独立窗口</td><td><code>!</code></td></tr></tbody></table>
+<h2 id="复制与滚动">复制与滚动</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>操作</th><th>按键</th></tr></thead><tbody><tr><td>进入复制/滚动模式</td><td><code>Ctrl+b</code> 然后 <code>[</code></td></tr><tr><td>移动光标</td><td>方向键 / <code>PgUp</code> <code>PgDn</code></td></tr><tr><td>开始选择（vi 模式）</td><td><code>Space</code></td></tr><tr><td>复制</td><td><code>Enter</code></td></tr><tr><td>粘贴</td><td><code>Ctrl+b</code> 然后 <code>]</code></td></tr><tr><td>退出复制模式</td><td><code>q</code></td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>tmux new -s dev # 新建并命名</span></span>
+<span class="line"><span>tmux new -s dev -d # 后台新建，不进入</span></span>
+<span class="line"><span>tmux rename-session -t old new</span></span>
+<span class="line"><span>tmux kill-server # 关掉所有 tmux</span></span>
+<span class="line"><span>tmux list-keys # 查看所有快捷键</span></span>
+<span class="line"><span>tmux source-file ~/.tmux.conf # 重载配置</span></span></code></pre>
+<p>在 tmux 里也可以：<code>Ctrl+b</code> 然后 <code>:</code> 进入命令行，例如：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>:new-window</span></span>
+<span class="line"><span>:split-window -h</span></span>
+<span class="line"><span>:kill-session</span></span></code></pre>
+<h2 id="最小工作流">最小工作流</h2>
+<hr>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span># 1. 开会话</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>tmux new -s proj</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 2. 分屏：Ctrl+b %（左右）、Ctrl+b "（上下）</span></span>
+<span class="line"><span># 3. 切窗格：Ctrl+b ←/→/↑/↓</span></span>
+<span class="line"><span># 4. 新窗口：Ctrl+b c ，切换：Ctrl+b n/p</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 5. 离开但保持运行</span></span>
+<span class="line"><span># Ctrl+b d</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 6. 回来</span></span>
+<span class="line"><span>tmux a -t proj</span></span></code></pre>
+<h2 id="实用配置tmuxconf">实用配置（<code>~/.tmux.conf</code>）</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span># 把前缀改成 Ctrl+a（可选）</span></span>
+<span class="line"><span># unbind C-b</span></span>
+<span class="line"><span># set -g prefix C-a</span></span>
+<span class="line"><span># bind C-a send-prefix</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>set -g mouse on # 鼠标点选窗格、拖分界、滚轮</span></span>
+<span class="line"><span>set -g history-limit 10000</span></span>
+<span class="line"><span>set -g base-index 1 # 窗口从 1 编号</span></span>
+<span class="line"><span>setw -g pane-base-index 1</span></span>
+<span class="line"><span>setw -g mode-keys vi</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 更直观的分屏键</span></span>
+<span class="line"><span>bind | split-window -h</span></span>
+<span class="line"><span>bind - split-window -v</span></span></code></pre>
+<p>改完后：<code>tmux source-file ~/.tmux.conf</code>，或重开会话。</p> </article> <aside class="post-toc"> <nav> <strong>目录</strong> <ul> <li class="depth-2"> <a href="#会话">会话</a> </li><li class="depth-2"> <a href="#窗口">窗口</a> </li><li class="depth-2"> <a href="#窗格分屏">窗格分屏</a> </li><li class="depth-2"> <a href="#复制与滚动">复制与滚动</a> </li><li class="depth-2"> <a href="#最小工作流">最小工作流</a> </li><li class="depth-2"> <a href="#实用配置tmuxconf">实用配置（~/.tmux.conf）</a> </li> </ul> </nav> </aside> </div>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll("pre").forEach(t=>{const e=document.createElement("button");e.className="copy-btn",e.innerText="复制",e.onclick=function(){navigator.clipboard.writeText(t.innerText).then(()=>{e.innerText="已复制",setTimeout(()=>e.innerText="复制",2e3)})},t.style.position="relative",t.appendChild(e)})});</script> </main> </body> </html>
